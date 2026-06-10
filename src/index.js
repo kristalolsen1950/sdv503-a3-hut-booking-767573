@@ -1,25 +1,23 @@
 import readline from "readline";
 import { loadHuts, loadBookings, saveBookings } from "./datastore.js";
-
 import {
   validateName,
   validateNights,
   validatePartySize,
   validateDate
 } from "./validation.js";
-
 import { checkCapacity } from "./capacity.js";
 
 let huts = [];
 let bookings = [];
 
-// Create readline interface
+// Create readline interface for CLI input/output
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-// Clear screen + show menu
+// Display the main menu
 function showMenu() {
   console.clear();
   console.log("=== Hut Booking Manager ===");
@@ -38,13 +36,13 @@ function pauseAndReturn() {
   });
 }
 
-// Error helper
+// Display an error message and return to menu
 function showError(msg) {
   console.log("\nError:", msg);
   return pauseAndReturn();
 }
 
-// ⭐ STEP 6 — Add Booking Flow (with hut menu)
+// Add a new booking
 function addBookingFlow() {
   console.clear();
   console.log("=== Add Booking ===");
@@ -83,7 +81,7 @@ function addBookingFlow() {
             const nights = Number(nightsStr);
             const partySize = Number(sizeStr);
 
-            // Capacity + overlap check
+            // Check capacity and overlapping bookings
             const capError = checkCapacity(
               hutName,
               dateStr,
@@ -95,7 +93,7 @@ function addBookingFlow() {
 
             if (capError) return showError(capError);
 
-            // Create booking object
+            // Create and save the new booking
             const newBooking = {
               id: Date.now().toString(),
               name,
@@ -119,7 +117,7 @@ function addBookingFlow() {
   });
 }
 
-// ⭐ STEP 7 — Cancel Booking Flow
+// Cancel an existing booking
 function cancelBookingFlow() {
   console.clear();
   console.log("=== Cancel Booking ===");
@@ -151,7 +149,7 @@ function cancelBookingFlow() {
   });
 }
 
-// ⭐ STEP 8 — View Bookings Flow
+// Display all bookings
 function viewBookingsFlow() {
   console.clear();
   console.log("=== View Bookings ===");
@@ -171,7 +169,49 @@ function viewBookingsFlow() {
   return pauseAndReturn();
 }
 
-// Main menu loop
+// Generate a summary report
+function summaryReportFlow() {
+  console.clear();
+  console.log("=== Summary Report ===");
+
+  if (bookings.length === 0) {
+    console.log("There are no bookings to summarise.");
+    return pauseAndReturn();
+  }
+
+  const totalBookings = bookings.length;
+  const totalTrampers = bookings.reduce((sum, b) => sum + b.partySize, 0);
+
+  const hutCounts = {};
+  const hutNights = {};
+
+  huts.forEach(h => {
+    hutCounts[h.name] = 0;
+    hutNights[h.name] = 0;
+  });
+
+  bookings.forEach(b => {
+    hutCounts[b.hut] += 1;
+    hutNights[b.hut] += b.nights;
+  });
+
+  console.log(`\nTotal bookings: ${totalBookings}`);
+  console.log(`Total trampers: ${totalTrampers}`);
+
+  console.log("\nBookings per hut:");
+  Object.entries(hutCounts).forEach(([hut, count]) => {
+    console.log(`- ${hut}: ${count}`);
+  });
+
+  console.log("\nNights booked per hut:");
+  Object.entries(hutNights).forEach(([hut, nights]) => {
+    console.log(`- ${hut}: ${nights} nights`);
+  });
+
+  return pauseAndReturn();
+}
+
+// Main menu controller
 function mainMenu() {
   showMenu();
 
@@ -184,8 +224,7 @@ function mainMenu() {
       case "3":
         return viewBookingsFlow();
       case "4":
-        console.log("Summary Report selected (coming soon)");
-        return pauseAndReturn();
+        return summaryReportFlow();
       case "5":
         console.log("Goodbye!");
         rl.close();
@@ -197,7 +236,7 @@ function mainMenu() {
   });
 }
 
-// Startup
+// Load data and start the program
 async function start() {
   console.log("Hut Booking Manager starting...");
 
