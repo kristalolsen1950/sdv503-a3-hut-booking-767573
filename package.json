@@ -1,0 +1,22 @@
+{
+  "name": "sdv503-a3-hut-booking-767573",
+  "version": "1.0.0",
+  "description": "SDV503-A3",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristalolsen1950/sdv503-a3-hut-booking-767573.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kristalolsen1950/sdv503-a3-hut-booking-767573/issues"
+  },
+  "homepage": "https://github.com/kristalolsen1950/sdv503-a3-hut-booking-767573#readme"
+}
+
