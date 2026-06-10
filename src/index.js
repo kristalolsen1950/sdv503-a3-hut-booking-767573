@@ -53,7 +53,7 @@ function addBookingFlow() {
     const nameError = validateName(name);
     if (nameError) return showError(nameError);
 
-    // ⭐ Hut selection menu
+    // Hut selection menu
     console.log("\nSelect a hut:");
     huts.forEach((h, i) => {
       console.log(`${i + 1}. ${h.name}`);
@@ -83,7 +83,7 @@ function addBookingFlow() {
             const nights = Number(nightsStr);
             const partySize = Number(sizeStr);
 
-            // ⭐ Capacity + overlap check
+            // Capacity + overlap check
             const capError = checkCapacity(
               hutName,
               dateStr,
@@ -119,6 +119,58 @@ function addBookingFlow() {
   });
 }
 
+// ⭐ STEP 7 — Cancel Booking Flow
+function cancelBookingFlow() {
+  console.clear();
+  console.log("=== Cancel Booking ===");
+
+  if (bookings.length === 0) {
+    console.log("There are no bookings to cancel.");
+    return pauseAndReturn();
+  }
+
+  console.log("\nCurrent bookings:");
+  bookings.forEach((b, i) => {
+    console.log(
+      `${i + 1}. ID: ${b.id} | ${b.name} | ${b.hut} | ${b.date} (${b.nights} nights, ${b.partySize} people)`
+    );
+  });
+
+  rl.question("\nEnter the Booking ID to cancel: ", (id) => {
+    const index = bookings.findIndex((b) => b.id === id.trim());
+
+    if (index === -1) {
+      return showError("Booking ID not found.");
+    }
+
+    const removed = bookings.splice(index, 1)[0];
+    saveBookings(bookings);
+
+    console.log(`\nBooking for ${removed.name} at ${removed.hut} has been cancelled.`);
+    return pauseAndReturn();
+  });
+}
+
+// ⭐ STEP 8 — View Bookings Flow
+function viewBookingsFlow() {
+  console.clear();
+  console.log("=== View Bookings ===");
+
+  if (bookings.length === 0) {
+    console.log("There are no bookings.");
+    return pauseAndReturn();
+  }
+
+  console.log("\nCurrent bookings:");
+  bookings.forEach((b, i) => {
+    console.log(
+      `${i + 1}. ID: ${b.id} | ${b.name} | ${b.hut} | ${b.date} (${b.nights} nights, ${b.partySize} people)`
+    );
+  });
+
+  return pauseAndReturn();
+}
+
 // Main menu loop
 function mainMenu() {
   showMenu();
@@ -128,11 +180,9 @@ function mainMenu() {
       case "1":
         return addBookingFlow();
       case "2":
-        console.log("Cancel Booking selected (coming soon)");
-        return pauseAndReturn();
+        return cancelBookingFlow();
       case "3":
-        console.log("View Bookings selected (coming soon)");
-        return pauseAndReturn();
+        return viewBookingsFlow();
       case "4":
         console.log("Summary Report selected (coming soon)");
         return pauseAndReturn();
