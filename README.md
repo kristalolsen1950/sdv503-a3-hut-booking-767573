@@ -35,7 +35,10 @@ Features
 -Bookings per hut
 -Nights booked per hut
 
-5.Exit
+5. Search Bookings by Name
+-Enter name or partial name
+-Case In-sensitive
+-Shows all matching booking
 
 Project Structure
 src/
