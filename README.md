@@ -1,7 +1,8 @@
 # sdv503-a3-hut-booking-767573
-SDV503-A3
-Hut Booking Manager
-This project is a simple command‑line booking system for three huts on the Milford Track. Users can add bookings, cancel bookings, view all bookings, and generate a summary report. The program loads hut and booking data from JSON files and saves any changes back to disk.
+SDV503‑A3 Hut Booking Manager is a simple command‑line booking system for three huts on the Milford Track. It allows users to add bookings, cancel bookings, view all bookings, search bookings by name, and generate a summary report. The program loads hut and booking data from JSON files at startup and saves any changes back to disk, ensuring persistence across runs. This project demonstrates JavaScript modules, file handling, validation, and building a menu‑driven CLI application.
+
+Run command:  
+node src/index.js
 
 The purpose of the project is to practise JavaScript modules, file handling, validation, and building a menu‑driven CLI.
 
