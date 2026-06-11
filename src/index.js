@@ -17,15 +17,22 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
+// Safe screen clear for all terminals
+function clearScreen() {
+  process.stdout.write("\u001b[2J\u001b[0;0H");
+}
+
 // Display the main menu
 function showMenu() {
-  console.clear();
+  clearScreen();
+  console.log(""); // <-- FIX: forces terminal to scroll
   console.log("=== Hut Booking Manager ===");
   console.log("1. Add Booking");
   console.log("2. Cancel Booking");
   console.log("3. View Bookings");
   console.log("4. Summary Report");
-  console.log("5. Exit");
+  console.log("5. Search Bookings by Name");
+  console.log("6. Exit");
   console.log("===========================");
 }
 
@@ -44,7 +51,7 @@ function showError(msg) {
 
 // Add a new booking
 function addBookingFlow() {
-  console.clear();
+  clearScreen();
   console.log("=== Add Booking ===");
 
   rl.question("Tramper name: ", (name) => {
@@ -119,7 +126,7 @@ function addBookingFlow() {
 
 // Cancel an existing booking
 function cancelBookingFlow() {
-  console.clear();
+  clearScreen();
   console.log("=== Cancel Booking ===");
 
   if (bookings.length === 0) {
@@ -151,7 +158,7 @@ function cancelBookingFlow() {
 
 // Display all bookings
 function viewBookingsFlow() {
-  console.clear();
+  clearScreen();
   console.log("=== View Bookings ===");
 
   if (bookings.length === 0) {
@@ -169,9 +176,38 @@ function viewBookingsFlow() {
   return pauseAndReturn();
 }
 
+// NEW: Search bookings by name (case-insensitive)
+function searchBookingsFlow() {
+  clearScreen();
+  console.log("=== Search Bookings by Name ===");
+
+  if (bookings.length === 0) {
+    console.log("There are no bookings to search.");
+    return pauseAndReturn();
+  }
+
+  rl.question("Enter name to search: ", (name) => {
+    const searchTerm = name.trim().toLowerCase();
+
+    const results = bookings.filter((b) =>
+      b.name.toLowerCase().includes(searchTerm)
+    );
+
+    console.log(`\nFound ${results.length} matching bookings:\n`);
+
+    results.forEach((b) =>
+      console.log(
+        `ID: ${b.id} | ${b.name} | ${b.hut} | ${b.date} (${b.nights} nights, ${b.partySize} people)`
+      )
+    );
+
+    return pauseAndReturn();
+  });
+}
+
 // Generate a summary report
 function summaryReportFlow() {
-  console.clear();
+  clearScreen();
   console.log("=== Summary Report ===");
 
   if (bookings.length === 0) {
@@ -226,6 +262,8 @@ function mainMenu() {
       case "4":
         return summaryReportFlow();
       case "5":
+        return searchBookingsFlow();
+      case "6":
         console.log("Goodbye!");
         rl.close();
         return;
